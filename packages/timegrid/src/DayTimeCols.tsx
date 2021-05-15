@@ -64,7 +64,7 @@ export class DayTimeCols extends DateComponent<DayTimeColsProps> {
         {(nowDate: DateMarker, todayRange: DateRange) => (
           <TimeCols
             ref={this.timeColsRef}
-            {...this.slicer.sliceProps(props, dateProfile, null, context, dayRanges)}
+            {...this.slicer.sliceProps(props, dateProfile, null, null, context, dayRanges)}
             forPrint={props.forPrint}
             axis={props.axis}
             dateProfile={dateProfile}

@@ -56,6 +56,7 @@ export const BASE_OPTION_REFINERS = {
   defaultAllDayEventDuration: createDuration,
   defaultTimedEventDuration: createDuration,
   nextDayThreshold: createDuration,
+  prevDayThreshold: createDuration,
   scrollTime: createDuration,
   scrollTimeReset: Boolean,
   slotMinTime: createDuration,
@@ -458,14 +459,14 @@ export type GenericListenerRefiners = {
 
 export type RawOptionsFromRefiners<Refiners extends GenericRefiners> = {
   [Prop in keyof Refiners]?: // all optional
-    Refiners[Prop] extends ((input: infer RawType) => infer RefinedType)
-      ? (any extends RawType ? RefinedType : RawType) // if input type `any`, use output (for Boolean/Number/String)
-      : never
+  Refiners[Prop] extends ((input: infer RawType) => infer RefinedType)
+  ? (any extends RawType ? RefinedType : RawType) // if input type `any`, use output (for Boolean/Number/String)
+  : never
 }
 
 export type RefinedOptionsFromRefiners<Refiners extends GenericRefiners> = {
   [Prop in keyof Refiners]?: // all optional
-    Refiners[Prop] extends ((input: any) => infer RefinedType) ? RefinedType : never
+  Refiners[Prop] extends ((input: any) => infer RefinedType) ? RefinedType : never
 }
 
 export type DefaultedRefinedOptions<RefinedOptions extends Dictionary, DefaultKey extends keyof RefinedOptions> =

@@ -19,6 +19,7 @@ export interface DayTableProps {
   dateProfile: DateProfile,
   dayTableModel: DayTableModel
   nextDayThreshold: Duration
+  prevDayThreshold: Duration
   businessHours: EventStore
   eventStore: EventStore
   eventUiBases: EventUiHash
@@ -49,7 +50,7 @@ export class DayTable extends DateComponent<DayTableProps, ViewContext> {
     return (
       <Table
         ref={this.tableRef}
-        {...this.slicer.sliceProps(props, props.dateProfile, props.nextDayThreshold, context, props.dayTableModel)}
+        {...this.slicer.sliceProps(props, props.dateProfile, props.nextDayThreshold, props.prevDayThreshold, context, props.dayTableModel)}
         dateProfile={props.dateProfile}
         cells={props.dayTableModel.cells}
         colGroupNode={props.colGroupNode}

@@ -48,6 +48,7 @@ export class DayTimeColsView extends TimeColsView {
         dateProfile={dateProfile}
         dayTableModel={dayTableModel}
         nextDayThreshold={options.nextDayThreshold}
+        prevDayThreshold={options.prevDayThreshold}
         tableMinWidth={contentArg.tableMinWidth}
         colGroupNode={contentArg.tableColGroupNode}
         renderRowIntro={hasAttachedAxis ? this.renderTableRowAxis : null}

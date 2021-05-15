@@ -46,19 +46,20 @@ export abstract class Slicer<SegType extends Seg, ExtraArgs extends any[] = []> 
     props: SliceableProps,
     dateProfile: DateProfile,
     nextDayThreshold: Duration | null,
+    prevDayThreshold: Duration | null,
     context: CalendarContext,
     ...extraArgs: ExtraArgs
   ): SlicedProps<SegType> {
     let { eventUiBases } = props
-    let eventSegs = this.sliceEventStore(props.eventStore, eventUiBases, dateProfile, nextDayThreshold, ...extraArgs)
+    let eventSegs = this.sliceEventStore(props.eventStore, eventUiBases, dateProfile, nextDayThreshold, prevDayThreshold, ...extraArgs)
 
     return {
       dateSelectionSegs: this.sliceDateSelection(props.dateSelection, eventUiBases, context, ...extraArgs),
-      businessHourSegs: this.sliceBusinessHours(props.businessHours, dateProfile, nextDayThreshold, context, ...extraArgs),
+      businessHourSegs: this.sliceBusinessHours(props.businessHours, dateProfile, nextDayThreshold, prevDayThreshold, context, ...extraArgs),
       fgEventSegs: eventSegs.fg,
       bgEventSegs: eventSegs.bg,
-      eventDrag: this.sliceEventDrag(props.eventDrag, eventUiBases, dateProfile, nextDayThreshold, ...extraArgs),
-      eventResize: this.sliceEventResize(props.eventResize, eventUiBases, dateProfile, nextDayThreshold, ...extraArgs),
+      eventDrag: this.sliceEventDrag(props.eventDrag, eventUiBases, dateProfile, nextDayThreshold, prevDayThreshold, ...extraArgs),
+      eventResize: this.sliceEventResize(props.eventResize, eventUiBases, dateProfile, nextDayThreshold, prevDayThreshold, ...extraArgs),
       eventSelection: props.eventSelection,
     } // TODO: give interactionSegs?
   }
@@ -80,6 +81,7 @@ export abstract class Slicer<SegType extends Seg, ExtraArgs extends any[] = []> 
     businessHours: EventStore,
     dateProfile: DateProfile,
     nextDayThreshold: Duration | null,
+    prevDayThreshold: Duration | null,
     context: CalendarContext,
     ...extraArgs: ExtraArgs
   ): SegType[] {
@@ -90,12 +92,13 @@ export abstract class Slicer<SegType extends Seg, ExtraArgs extends any[] = []> 
     return this._sliceEventStore(
       expandRecurring(
         businessHours,
-        computeActiveRange(dateProfile, Boolean(nextDayThreshold)),
+        computeActiveRange(dateProfile, Boolean(nextDayThreshold || prevDayThreshold)),
         context,
       ),
       {},
       dateProfile,
       nextDayThreshold,
+      prevDayThreshold,
       ...extraArgs,
     ).bg
   }
@@ -105,14 +108,15 @@ export abstract class Slicer<SegType extends Seg, ExtraArgs extends any[] = []> 
     eventUiBases: EventUiHash,
     dateProfile: DateProfile,
     nextDayThreshold: Duration | null,
+    prevDayThreshold: Duration | null,
     ...extraArgs: ExtraArgs
   ): { bg: SegType[], fg: SegType[] } {
     if (eventStore) {
       let rangeRes = sliceEventStore(
         eventStore,
         eventUiBases,
-        computeActiveRange(dateProfile, Boolean(nextDayThreshold)),
-        nextDayThreshold,
+        computeActiveRange(dateProfile, Boolean(nextDayThreshold || prevDayThreshold)),
+        nextDayThreshold, prevDayThreshold
       )
 
       return {
@@ -128,6 +132,7 @@ export abstract class Slicer<SegType extends Seg, ExtraArgs extends any[] = []> 
     eventUiBases: EventUiHash,
     dateProfile: DateProfile,
     nextDayThreshold: Duration | null,
+    prevDayThreshold: Duration | null,
     ...extraArgs: ExtraArgs
   ): EventSegUiInteractionState {
     if (!interaction) {
@@ -137,8 +142,8 @@ export abstract class Slicer<SegType extends Seg, ExtraArgs extends any[] = []> 
     let rangeRes = sliceEventStore(
       interaction.mutatedEvents,
       eventUiBases,
-      computeActiveRange(dateProfile, Boolean(nextDayThreshold)),
-      nextDayThreshold,
+      computeActiveRange(dateProfile, Boolean(nextDayThreshold || prevDayThreshold)),
+      nextDayThreshold, prevDayThreshold
     )
 
     return {

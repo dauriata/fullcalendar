@@ -25,7 +25,7 @@ export interface EventRenderRange extends EventTuple {
 /*
 Specifying nextDayThreshold signals that all-day ranges should be sliced.
 */
-export function sliceEventStore(eventStore: EventStore, eventUiBases: EventUiHash, framingRange: DateRange, nextDayThreshold?: Duration) {
+export function sliceEventStore(eventStore: EventStore, eventUiBases: EventUiHash, framingRange: DateRange, nextDayThreshold?: Duration, prevDayThreshold?: Duration) {
   let inverseBgByGroupId: { [groupId: string]: DateRange[] } = {}
   let inverseBgByDefId: { [defId: string]: DateRange[] } = {}
   let defByGroupId: { [groupId: string]: EventDef } = {}
@@ -56,8 +56,8 @@ export function sliceEventStore(eventStore: EventStore, eventUiBases: EventUiHas
     let ui = eventUis[def.defId]
     let origRange = instance.range
 
-    let normalRange = (!def.allDay && nextDayThreshold) ?
-      computeVisibleDayRange(origRange, nextDayThreshold) :
+    let normalRange = (!def.allDay && (nextDayThreshold || prevDayThreshold)) ?
+      computeVisibleDayRange(origRange, nextDayThreshold, prevDayThreshold) :
       origRange
 
     let slicedRange = intersectRanges(normalRange, framingRange)

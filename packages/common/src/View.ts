@@ -26,7 +26,7 @@ if nextDayThreshold is specified, slicing is done in an all-day fashion.
 you can get nextDayThreshold from context.nextDayThreshold
 */
 export function sliceEvents(
-  props: ViewProps & { dateProfile: DateProfile, nextDayThreshold: Duration },
+  props: ViewProps & { dateProfile: DateProfile, nextDayThreshold: Duration, prevDayThreshold: Duration },
   allDay?: boolean,
 ): EventRenderRange[] {
   return sliceEventStore(
@@ -34,5 +34,6 @@ export function sliceEvents(
     props.eventUiBases,
     props.dateProfile.activeRange,
     allDay ? props.nextDayThreshold : null,
+    allDay ? props.prevDayThreshold : null,
   ).fg
 }
